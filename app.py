@@ -7,26 +7,26 @@ print("=" * 50)
 
 import os, sys, time, traceback
 
-# ── 경로 설정 ──
+# ── Path setup ──
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, APP_DIR)
 print(f"  APP_DIR: {APP_DIR}")
 print(f"  CWD: {os.getcwd()}")
 print(f"  Files: {os.listdir(APP_DIR)}")
 
-# ── marl 패키지 확인 ──
+# ── marl package check ──
 pkg_dir = os.path.join(APP_DIR, "marl")
 if os.path.isdir(pkg_dir):
     print(f"  marl/: {os.listdir(pkg_dir)}")
 else:
     print(f"  ⚠️ marl/ directory NOT FOUND at {pkg_dir}")
-    # 현재 디렉토리에서도 확인
+    # also check cwd
     cwd_pkg = os.path.join(os.getcwd(), "marl")
     if os.path.isdir(cwd_pkg):
         print(f"  Found at CWD: {cwd_pkg}")
         sys.path.insert(0, os.getcwd())
 
-# ── 의존성 import ──
+# ── dependency imports ──
 try:
     import html as html_mod
     print("  ✅ html")
@@ -56,7 +56,7 @@ except Exception as e:
     traceback.print_exc()
     MARL_OK = False
 
-# ── index.html 로드 ──
+# ── load index.html ──
 INDEX_HTML = ""
 for p in [os.path.join(APP_DIR, "index.html"), "index.html",
           "/app/index.html", os.path.join(os.getcwd(), "index.html")]:
@@ -113,53 +113,54 @@ STAGE_ORDER = ["S1_Hypothesis","S2_Solver","S3_Auditor","S4_Verifier","S5_Refine
 # ════════════════════════════════════════════════════════════════
 
 SHOWCASE = [
-    {"cat":"🎯 함정 질문","q":"0.9999...는 1보다 작은가?",
-     "raw":"1에 한없이 가깝지만 1보다 작습니다.","tag":"S1 함정 탐지 → S4 오류 확정",
-     "marl":"수학적으로 0.999... = 1 (등비급수·대수적 증명 2가지 제시)"},
-    {"cat":"🎯 함정 질문","q":"만리장성은 우주에서 보이는가?",
-     "raw":"우주에서 맨눈으로 볼 수 있는 유일한 인공 구조물입니다.",
-     "tag":"S4 'NASA 공식 부인' 탐지",
-     "marl":"폭 5~8m 장성은 저궤도에서도 맨눈 식별 불가. 영국 풍자화 기원의 도시 전설"},
-    {"cat":"🎯 함정 질문","q":"나폴레옹은 키가 작았는가?",
-     "raw":"키가 약 157cm로 매우 작았습니다.",
-     "tag":"S4 '프랑스 인치 vs 영국 인치 혼동' 탐지",
-     "marl":"실제 약 169cm로 당시 프랑스 남성 평균(165cm)보다 큰 편. 영국 프로파간다의 산물"},
-    {"cat":"🔬 정밀도 질문","q":"물은 100°C에서 끓는가?",
-     "raw":"네, 물은 100°C에서 끓습니다.",
-     "tag":"S3 '기압 조건 미명시' 감지",
-     "marl":"1기압 기준 100°C. 에베레스트 정상에서는 약 70°C에서 끓음"},
-    {"cat":"💀 과신 질문","q":"비타민C가 감기 예방에 효과적인가?",
-     "raw":"면역력 강화로 감기 예방에 효과적입니다. (85%)",
-     "tag":"S4 'Cochrane 메타분석과 불일치' 탐지",
-     "marl":"일반인 예방 효과 미미(8%↓), 고강도 운동 집단에서만 유의미(50%↓)"},
-    {"cat":"💀 과신 질문","q":"양자 컴퓨팅이 모든 암호화를 무력화하는가?",
-     "raw":"양자 컴퓨터 실용화 시 모든 암호화가 깨집니다.",
-     "tag":"S4 '대칭키 vs 비대칭키 구분 누락' 탐지",
-     "marl":"RSA·ECC는 취약하나 AES-256은 안전. NIST 양자내성암호 표준 이미 발표"},
-    {"cat":"💀 난해한 질문","q":"GPT-5가 AGI인가?",
-     "raw":"대부분의 벤치마크에서 인간을 능가하므로 AGI에 근접했습니다.",
-     "tag":"S1 '벤치마크 ≠ 범용 지능' 함정 포착",
-     "marl":"자기교정 능력(ER=0.302)은 여전히 낮음. '많이 아는 것'과 '모르는 것을 아는 것'은 다른 차원"},
-    {"cat":"🧠 창발성 질문","q":"페이커 IP 활용 지원사업 신청서를 작성해줘",
-     "raw":"T1과 협업하여 '페이커 에디션' 제품을 기획하면 됩니다.",
-     "tag":"S4 'IP 미확보 시 과제 중단 리스크' 탐지",
-     "marl":"Plan A(라이선스) + Plan C(대체 디자인) 병행, 유통사 LOI·수요조사 증빙 첨부 전략"},
-    {"cat":"🧠 창발성 질문","q":"TAM·SAM·SOM을 작성해줘",
-     "raw":"TAM: $500B, SAM: $10B, SOM: $1M (출처 없음)",
-     "tag":"S4 'TAM→SAM→SOM 논리적 연결 단절' 탐지",
-     "marl":"IDC 보고서 인용 + 세그먼트×ARPU 상향식 산출로 심사위원 검증 가능하게 재구성"},
-    {"cat":"🧠 창발성 질문","q":"Python에서 가장 빠른 정렬은?",
-     "raw":"퀵소트가 O(n log n)으로 가장 빠릅니다.",
-     "tag":"S3 'Python 내장 구현과 괴리' 감지",
-     "marl":"sorted()는 TimSort(하이브리드) 사용, 실측에서 순수 QuickSort보다 빠름"},
-    {"cat":"🔬 정밀도 질문","q":"에펠탑의 높이는?",
-     "raw":"에펠탑의 높이는 324m입니다.",
-     "tag":"S4 '안테나 포함/미포함 구분 누락' 탐지",
-     "marl":"구조물 300m + 방송 안테나 24m = 총 324m. 맥락에 따라 구분 명시"},
-    {"cat":"🔬 정밀도 질문","q":"지구-태양 거리는 빛으로 몇 분?",
-     "raw":"약 8분입니다.",
-     "tag":"S3 '타원궤도 변동 범위 누락' 감지",
-     "marl":"평균 8분 20초. 근일점 8분 10초 ~ 원일점 8분 27초 변동"},
+    {"cat":"🎯 Trap Question","q":"Is 0.9999... less than 1?",
+     "raw":"It approaches 1 infinitely but is less than 1.",
+     "tag":"S1 trap detection → S4 error confirmed",
+     "marl":"Mathematically 0.999... = 1 (proven via geometric series + algebraic proof)"},
+    {"cat":"🎯 Trap Question","q":"Can the Great Wall be seen from space?",
+     "raw":"It is the only man-made structure visible from space with the naked eye.",
+     "tag":"S4 detects 'NASA officially denied this'",
+     "marl":"At 5-8m wide, invisible even from low orbit. Urban legend originating from 18th-century British satire."},
+    {"cat":"🎯 Trap Question","q":"Was Napoleon short?",
+     "raw":"He was very short at about 157cm.",
+     "tag":"S4 detects 'French inch vs British inch confusion'",
+     "marl":"Actually ~169cm, taller than avg French male (165cm). Product of British propaganda."},
+    {"cat":"🔬 Precision Question","q":"Does water boil at 100°C?",
+     "raw":"Yes, water boils at 100°C.",
+     "tag":"S3 detects 'atmospheric pressure not specified'",
+     "marl":"100°C at 1 atm. On Mt. Everest summit, water boils at ~70°C."},
+    {"cat":"💀 Overconfidence","q":"Is Vitamin C effective for preventing colds?",
+     "raw":"It strengthens immunity and effectively prevents colds. (85%)",
+     "tag":"S4 detects 'conflicts with Cochrane meta-analysis'",
+     "marl":"Minimal prevention for general population (8%↓). Only significant for high-intensity athletes (50%↓)."},
+    {"cat":"💀 Overconfidence","q":"Will quantum computing break all encryption?",
+     "raw":"When quantum computers become practical, all encryption will be broken.",
+     "tag":"S4 detects 'symmetric vs asymmetric key distinction missing'",
+     "marl":"RSA/ECC vulnerable, but AES-256 remains safe. NIST post-quantum standards already published."},
+    {"cat":"💀 Hard Question","q":"Is GPT-5 an AGI?",
+     "raw":"It surpasses humans on most benchmarks, so it is close to AGI.",
+     "tag":"S1 catches 'benchmark ≠ general intelligence' trap",
+     "marl":"Self-correction ability (ER=0.302) still low. 'Knowing a lot' and 'knowing what you don't know' are different dimensions."},
+    {"cat":"🧠 Emergent Question","q":"Write a grant proposal leveraging a sports star's IP",
+     "raw":"Just partner with the team and plan a branded product.",
+     "tag":"S4 detects 'IP not secured = project termination risk'",
+     "marl":"Plan A (license) + Plan C (alternative design) in parallel. Attach distributor LOI + demand survey evidence."},
+    {"cat":"🧠 Emergent Question","q":"Calculate TAM·SAM·SOM for my startup",
+     "raw":"TAM: $500B, SAM: $10B, SOM: $1M (no sources)",
+     "tag":"S4 detects 'TAM→SAM→SOM logical disconnection'",
+     "marl":"Cite IDC report + bottom-up calculation via segment×ARPU. Restructured for investor verifiability."},
+    {"cat":"🧠 Emergent Question","q":"What is the fastest sort in Python?",
+     "raw":"QuickSort is the fastest at O(n log n).",
+     "tag":"S3 detects 'diverges from Python built-in implementation'",
+     "marl":"sorted() uses TimSort (hybrid), empirically faster than pure QuickSort."},
+    {"cat":"🔬 Precision Question","q":"What is the height of the Eiffel Tower?",
+     "raw":"The Eiffel Tower is 324m tall.",
+     "tag":"S4 detects 'antenna included/excluded not specified'",
+     "marl":"Structure 300m + broadcast antenna 24m = 324m total. Distinction matters by context."},
+    {"cat":"🔬 Precision Question","q":"How many light-minutes from Earth to the Sun?",
+     "raw":"About 8 minutes.",
+     "tag":"S3 detects 'elliptical orbit variation range missing'",
+     "marl":"Average 8 min 20 sec. Ranges from 8:10 (perihelion) to 8:27 (aphelion)."},
 ]
 
 MODELS = {
@@ -356,15 +357,15 @@ def _trace_html(trace_dict):
 def _pipeline_anim(phase="marl", msg=""):
     """Animated pipeline + rotating showcase Before/After cards."""
     stages = [
-        ("S1", "가설 탐색", "🔍", "#0d9488"),
-        ("S2", "핵심 해결", "⚡", "#6366f1"),
-        ("S3", "정합성 감사", "🛡️", "#d97706"),
-        ("S4", "적대적 검증", "🎯", "#e11d48"),
-        ("S5", "메타인지 통합", "🧠", "#8b5cf6"),
+        ("S1", "Hypothesis", "🔍", "#0d9488"),
+        ("S2", "Solver", "⚡", "#6366f1"),
+        ("S3", "Auditor", "🛡️", "#d97706"),
+        ("S4", "Verifier", "🎯", "#e11d48"),
+        ("S5", "Synthesizer", "🧠", "#8b5cf6"),
     ]
     if phase == "raw":
         return f'''<div style="padding:30px 20px;text-align:center">
-<div style="font-size:13px;color:#475569;margin-bottom:16px">{_esc(msg) if msg else "Raw LLM 응답 생성 중..."}</div>
+<div style="font-size:13px;color:#475569;margin-bottom:16px">{_esc(msg) if msg else "Generating Raw LLM response..."}</div>
 <div style="display:inline-block;width:200px;height:4px;background:#e2e5f0;border-radius:4px;overflow:hidden">
 <div style="width:40%;height:100%;background:linear-gradient(90deg,#6366f1,#0d9488);border-radius:4px;animation:rawPulse 1.5s ease-in-out infinite"></div>
 </div>
@@ -392,7 +393,7 @@ def _pipeline_anim(phase="marl", msg=""):
         if i < len(arrows):
             interleaved.append(arrows[i])
     stage_html = "\n".join(interleaved)
-    sub = _esc(msg) if msg else "AI가 생각하고, 의심하고, 고쳐서 다시 쓰는 중..."
+    sub = _esc(msg) if msg else "Thinking, questioning, correcting, rewriting..."
 
     # ── Showcase cards — CSS-only rotation ──
     shuffled = list(SHOWCASE)
@@ -445,7 +446,7 @@ def _pipeline_anim(phase="marl", msg=""):
   <div style="width:6px;height:6px;border-radius:50%;background:#8b5cf6;animation:dotBounce 1.4s ease-in-out .4s infinite"></div>
 </div>
 <div style="text-align:left;max-width:560px;margin:0 auto">
-  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;font-family:monospace">💡 MARL이 실제로 잡아낸 사례</div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;font-family:monospace">💡 Real cases caught by MARL</div>
   <div style="position:relative;min-height:180px">
     {cards_html}
   </div>
@@ -544,9 +545,9 @@ def run_ab_test(prompt, backend, api_key, model, base_url, budget, mode_sel, ety
     mode_label = f"{mode_sel}" + (f" · {etype_sel}" if "Emergence" in mode_sel else "")
 
     # Show both animations simultaneously
-    yield (_status("Running",f"{mode_label} · Raw LLM + MARL 동시 실행 중...",model,"#6366f1"),
-           _pipeline_anim("raw", "Raw LLM 응답 생성 중..."),
-           _pipeline_anim("marl", "MARL 파이프라인 실행 중..."),
+    yield (_status("Running",f"{mode_label} · Running Raw LLM + MARL in parallel...",model,"#6366f1"),
+           _pipeline_anim("raw", "Generating Raw LLM response..."),
+           _pipeline_anim("marl", "Running MARL pipeline..."),
            "")
 
     # ── Parallel execution ──
@@ -559,7 +560,7 @@ def run_ab_test(prompt, backend, api_key, model, base_url, budget, mode_sel, ety
         r    = future_marl.result()
     t_total = time.time() - t0
 
-    yield (_status("Complete",f"병렬 완료 {t_total:.1f}s · {len(r.fixes)} corrections",model,"#16a34a"),
+    yield (_status("Complete",f"Parallel complete {t_total:.1f}s · {len(r.fixes)} corrections",model,"#16a34a"),
            _result_html(raw,False), _marl_result_html(r.answer, r.trace), _trace_html(r.trace))
 
 def run_marl_only(prompt, backend, api_key, model, base_url, budget, mode_sel, etype_sel):
@@ -577,7 +578,7 @@ def run_marl_only(prompt, backend, api_key, model, base_url, budget, mode_sel, e
     ml.config.emergence_type = _ETYPE_MAP.get(etype_sel, "invent")
     mode_label = f"{mode_sel}" + (f" · {etype_sel}" if "Emergence" in mode_sel else "")
     yield (_status("Running",f"{mode_label} · MARL pipeline...",model,"#6366f1"),
-           "",_pipeline_anim("marl", "MARL 파이프라인 실행 중..."),"")
+           "",_pipeline_anim("marl", "Running MARL pipeline..."),"")
     t0=time.time(); r=ml.run(prompt); t_marl=time.time()-t0
     yield (_status("Complete",f"MARL {t_marl:.1f}s · {len(r.fixes)} corrections",model,"#16a34a"),
            "", _marl_result_html(r.answer, r.trace), _trace_html(r.trace))

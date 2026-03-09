@@ -8,6 +8,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-0d9488)](LICENSE)
 [![HuggingFace](https://img.shields.io/badge/🤗%20Demo-HuggingFace-ff9d00)](https://huggingface.co/spaces/VIDraft/MARL)
 [![FINAL Bench](https://img.shields.io/badge/🏆%20FINAL%20Bench-Global%20%235-16a34a)](https://huggingface.co/spaces/FINAL-Bench/Leaderboard)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-24292e?logo=github)](https://github.com/Vidraft/MARL)
 
 `pip install marl-middleware` · `docker run vidraft/marl`
 
@@ -270,6 +271,7 @@ MARL's core reasoning engine — the multi-stage pipeline, weighted attention ma
 | 🤗 MARL Demo | [https://huggingface.co/spaces/VIDraft/MARL](https://huggingface.co/spaces/VIDraft/MARL) |
 | 🏆 FINAL Bench | [https://huggingface.co/spaces/FINAL-Bench/Leaderboard](https://huggingface.co/spaces/FINAL-Bench/Leaderboard) |
 | 📦 PyPI | [https://pypi.org/project/marl-middleware/](https://pypi.org/project/marl-middleware/) |
+| ⚡ GitHub | [https://github.com/Vidraft/MARL](https://github.com/Vidraft/MARL) |
 | ✉️ Contact | arxivgpt@gmail.com (Minsik KIM, CEO) |
 
 ---
