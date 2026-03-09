@@ -1,0 +1,155 @@
+<!-- MARL — Model-Agnostic Runtime Middleware for LLMs -->
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f8f9fc;--bg2:#f0f2f8;--surface:#ffffff;--surface-alt:#f5f6fa;
+  --border:#e2e5f0;--border-hover:#c7cce0;
+  --shadow-sm:0 1px 3px rgba(15,23,42,.04),0 1px 2px rgba(15,23,42,.06);
+  --shadow:0 4px 16px rgba(15,23,42,.06),0 1px 3px rgba(15,23,42,.08);
+  --shadow-lg:0 12px 40px rgba(15,23,42,.08),0 4px 12px rgba(15,23,42,.06);
+  --text:#0f172a;--text-sec:#475569;--text-muted:#94a3b8;
+  --ac:#6366f1;--ac2:#4f46e5;--ac-bg:rgba(99,102,241,.06);
+  --teal:#0d9488;--amber:#d97706;--green:#16a34a;--rose:#e11d48;--violet:#8b5cf6;
+  --radius:16px;--radius-sm:10px;--radius-xs:6px;
+  --font:'Sora',sans-serif;--mono:'JetBrains Mono',monospace;
+  --tr:0.22s cubic-bezier(0.4,0,0.2,1);
+}
+/* ── Global Gradio Override ── */
+.gradio-container{max-width:100%!important;width:100%!important;padding:0 12px!important;font-family:var(--font)!important;background:var(--bg)!important;margin:0 auto!important}
+.gradio-container *{font-family:var(--font)!important}
+header{display:none!important}
+footer{display:none!important}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 45% at 15% 8%,rgba(99,102,241,.05),transparent 55%),
+  radial-gradient(ellipse 55% 35% at 85% 92%,rgba(13,148,136,.04),transparent 50%)}
+::-webkit-scrollbar{width:5px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(99,102,241,.2);border-radius:10px}
+::selection{background:rgba(99,102,241,.12)}
+
+/* ── Buttons ── */
+.gr-button{font-family:var(--font)!important;border-radius:var(--radius-sm)!important;font-weight:600!important;transition:var(--tr)!important}
+.gr-button.primary{background:linear-gradient(135deg,#6366f1,#4f46e5)!important;border:none!important;box-shadow:0 4px 16px rgba(99,102,241,.25)!important;color:#fff!important}
+.gr-button.primary:hover{box-shadow:0 6px 24px rgba(99,102,241,.35)!important;transform:translateY(-1px)}
+.gr-button.secondary{background:var(--surface)!important;border:1px solid var(--border)!important;color:var(--text-sec)!important}
+.gr-button.secondary:hover{border-color:var(--ac)!important;color:var(--ac)!important;background:var(--ac-bg)!important}
+
+/* ── Inputs ── */
+.gr-input,.gr-dropdown,.gr-textbox textarea,.gr-slider{border-radius:var(--radius-sm)!important;border-color:var(--border)!important;font-family:var(--font)!important}
+.gr-input:focus,.gr-textbox textarea:focus{border-color:var(--ac)!important;box-shadow:0 0 0 3px rgba(99,102,241,.08)!important}
+.gr-panel,.gr-form{border-radius:var(--radius)!important;border-color:var(--border)!important;box-shadow:var(--shadow-sm)!important}
+.gr-accordion{border-radius:var(--radius)!important;border:1px solid var(--border)!important;overflow:hidden}
+
+/* ── Tabs ── */
+.gr-tab-nav{border-bottom:2px solid var(--border)!important;background:var(--surface)!important;border-radius:var(--radius-sm) var(--radius-sm) 0 0!important;overflow:hidden}
+.gr-tab-nav button{font-family:var(--mono)!important;font-weight:600!important;font-size:11px!important;padding:10px 20px!important;color:var(--text-muted)!important;border:none!important;letter-spacing:.3px;transition:var(--tr)!important}
+.gr-tab-nav button.selected{color:var(--ac)!important;border-bottom:2px solid var(--ac)!important;background:var(--ac-bg)!important}
+
+/* ── Animations ── */
+@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+
+/* ══ MARL HEADER ══ */
+.marl-wrap{position:relative;z-index:1;animation:fadeIn .6s ease-out}
+.marl-header{text-align:center;margin-bottom:16px}
+.badge-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:4px 14px;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--ac);box-shadow:var(--shadow-sm)}
+.pulse-dot{width:5px;height:5px;border-radius:50%;background:var(--ac);animation:pulse 2s infinite}
+.marl-title{font-size:clamp(20px,3.2vw,36px);font-weight:800;line-height:1.1;letter-spacing:-1.5px;margin-bottom:6px;
+  background:linear-gradient(135deg,#1e1b4b 15%,#6366f1 50%,#0d9488 85%);background-size:200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 6s ease-in-out infinite}
+.marl-sub{color:var(--text-muted);font-size:10.5px;line-height:1.8}
+.marl-sub b{color:var(--text-sec);font-weight:600}
+
+/* ── Stats ── */
+.stats{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:12px 0 14px}
+.st{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;text-align:center;min-width:90px;box-shadow:var(--shadow-sm);transition:var(--tr)}
+.st:hover{box-shadow:var(--shadow);border-color:var(--border-hover)}
+.stn{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--ac)}
+.stl{font-size:8px;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── Pipeline ── */
+.pipe{display:flex;align-items:center;justify-content:center;gap:0;margin:14px auto;max-width:700px}
+.pipe-node{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 12px;border-radius:var(--radius-xs);background:var(--surface);border:1px solid var(--border);transition:var(--tr);flex:1;box-shadow:var(--shadow-sm)}
+.pipe-node:hover{border-color:var(--ac);box-shadow:0 4px 16px rgba(99,102,241,.12);transform:translateY(-2px)}
+.pipe-icon{font-size:16px}
+.pipe-label{font-size:9px;font-weight:700;color:var(--text);font-family:var(--mono)}
+.pipe-num{font-size:7px;color:var(--text-muted);font-family:var(--mono);letter-spacing:1px}
+.pipe-arrow{color:var(--text-muted);font-size:12px;padding:0 4px;flex-shrink:0}
+
+/* ── Link badges ── */
+.link-row{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.link-badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:8px;font-weight:800;padding:3px 10px;border-radius:14px;text-decoration:none;letter-spacing:.3px;box-shadow:0 1px 3px rgba(0,0,0,.15);transition:all .2s}
+.link-badge:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.2)}
+
+/* ── Install ── */
+.install-bar{display:flex;align-items:center;justify-content:center;gap:12px;margin:12px auto;padding:8px 18px;background:var(--surface);border:1px solid var(--border);border-radius:100px;max-width:480px;box-shadow:var(--shadow-sm)}
+.install-bar code{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ac);letter-spacing:.5px}
+.install-sep{color:var(--text-muted);font-size:10px}
+
+/* ── Mobile ── */
+@media(max-width:768px){
+  .stats{gap:4px}.st{min-width:70px;padding:6px 10px}.stn{font-size:13px}
+  .pipe{flex-wrap:wrap;gap:4px}.pipe-arrow{display:none}
+  .link-row{gap:4px}.link-badge{font-size:7px;padding:2px 7px}
+  .badge-row{flex-direction:column;gap:4px}
+}
+</style>
+
+<div class="marl-wrap">
+<div class="marl-header">
+  <div class="badge-row">
+    <div class="badge"><div class="pulse-dot"></div>MARL v1.0 · Apache 2.0</div>
+  </div>
+
+  <h1 class="marl-title">Model-Agnostic Runtime Middleware</h1>
+
+  <p class="marl-sub">
+    <b>The 3rd approach after fine-tuning & RAG</b> — restructure reasoning at runtime, not model weights.<br>
+    5-stage multi-agent pipeline · <b>70%+ hallucination reduction</b> · One line to integrate with any LLM.
+  </p>
+
+  <div class="stats">
+    <div class="st"><div class="stn" style="color:#16a34a">70%+</div><div class="stl">Hallucination ↓</div></div>
+    <div class="st"><div class="stn">9</div><div class="stl">Emergence Engines</div></div>
+    <div class="st"><div class="stn" style="color:#d97706">5,538</div><div class="stl">Creative Seeds</div></div>
+    <div class="st"><div class="stn" style="color:#0d9488">2M+</div><div class="stl">MAU</div></div>
+    <div class="st"><div class="stn" style="color:#8b5cf6">1,500+</div><div class="stl">Public AI</div></div>
+  </div>
+
+  <div class="pipe">
+    <div class="pipe-node"><span class="pipe-icon">🔍</span><span class="pipe-label">Hypothesis</span><span class="pipe-num">S1</span></div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-node"><span class="pipe-icon">⚡</span><span class="pipe-label">Solver</span><span class="pipe-num">S2</span></div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-node"><span class="pipe-icon">🔎</span><span class="pipe-label">Auditor</span><span class="pipe-num">S3</span></div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-node"><span class="pipe-icon">🛡️</span><span class="pipe-label">Verifier</span><span class="pipe-num">S4</span></div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-node"><span class="pipe-icon">✨</span><span class="pipe-label">Synthesizer</span><span class="pipe-num">S5</span></div>
+  </div>
+
+  <div class="install-bar">
+    <code>pip install marl-middleware</code>
+    <span class="install-sep">or</span>
+    <code style="color:var(--teal)">docker run vidraft/marl</code>
+  </div>
+
+  <div class="link-row">
+    <a href="https://pypi.org/project/marl-middleware/" target="_blank" class="link-badge" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff">📦 PyPI</a>
+    <a href="https://huggingface.co/spaces/VIDraft/MARL" target="_blank" class="link-badge" style="background:linear-gradient(135deg,#ff9d00,#ffcd00);color:#1a1a2e">🤗 HuggingFace</a>
+    <a href="https://huggingface.co/spaces/FINAL-Bench/Leaderboard" target="_blank" class="link-badge" style="background:linear-gradient(135deg,#0d9488,#059669);color:#fff">🏆 FINAL Bench</a>
+    <a href="https://vidraft.net" target="_blank" class="link-badge" style="background:linear-gradient(135deg,#24292e,#40444b);color:#fff">🌐 VIDRAFT</a>
+    <a href="mailto:arxivgpt@gmail.com" class="link-badge" style="background:linear-gradient(135deg,#e11d48,#f43f5e);color:#fff">✉️ Contact</a>
+  </div>
+
+  <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px;font-family:var(--mono);font-size:8px;color:var(--text-muted)">
+    <span style="color:#e11d48">🔥 FINAL Bench Global #5 Dataset</span> ·
+    <span style="color:#0d9488">🏗 Seoul AI Hub</span> ·
+    <span style="color:#8b5cf6">⭐ HF STAR AI Top 12</span> ·
+    <span style="color:#d97706">🩺 FACTS Grounding #2</span>
+  </div>
+</div>
+</div>

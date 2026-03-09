@@ -1,0 +1,13 @@
+*.py[cod]
+__pycache__/
+*.c
+build/
+dist/
+*.egg-info/
+.pypirc
+core.py
+proxy.py
+setup.py
+pyproject.toml
+MANIFEST.in
+*.whl
